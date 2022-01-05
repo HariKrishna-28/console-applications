@@ -92,138 +92,136 @@ def transfer_funds(from_name, to_name, amount, balance_database):
     return balance_database
 
 
-# driver code
-def main():
-    stored_admin_data = {"Hario": 12345}
-    stored_user_data = {"kisna": 12345,
-                        "kaggleDhina": 123456, "dhina": 1234567, "har": 321}
-    available_denominations = {2000: 10, 1000: 10, 500: 10, 200: 10, 100: 10}
-    available_balances = {"kisna": 25000,
-                          "kaggleDhina": 30200, "dhina": 300400, "har": 10500}
-    max_user_threshold = {"kisna": 0, "kaggleDhina": 0, "dhina": 0, "har": 0}
+# Stored Data
 
-    while True:
+stored_admin_data = {"Hario": 12345}
+stored_user_data = {"kisna": 12345,
+                    "kaggleDhina": 123456, "dhina": 1234567, "har": 321}
+available_denominations = {2000: 10, 1000: 10, 500: 10, 200: 10, 100: 10}
+available_balances = {"kisna": 25000,
+                      "kaggleDhina": 30200, "dhina": 300400, "har": 10500}
+max_user_threshold = {"kisna": 0, "kaggleDhina": 0, "dhina": 0, "har": 0}
+
+# Driver Code
+
+while True:
+    clear_screen()
+    print("ATM Application")
+    user_choice = int(input("1. Admin Login\n2. User Login\n3. Exit\n"))
+    if user_choice == 3:
         clear_screen()
-        print("ATM Application")
-        user_choice = int(input("1. Admin Login\n2. User Login\n3. Exit\n"))
-        if user_choice == 3:
+        exit()
+
+    if user_choice == 1:
+        name, password = get_names(admin_login=True)
+        if (authenticate_user(stored_admin_data, name, password, admin=True)):
             clear_screen()
-            exit()
+            print("Welcome admin {}!".format(name))
 
-        if user_choice == 1:
-            name, password = get_names(admin_login=True)
-            if (authenticate_user(stored_admin_data, name, password, admin=True)):
-                clear_screen()
-                print("Welcome admin {}!".format(name))
+            while True:
+                admin_choice = int(
+                    input("1. Add Money\n2. Check Balance\n3. Exit \n"))
 
-                while True:
-                    admin_choice = int(
-                        input("1. Add Money\n2. Check Balance\n3. Exit \n"))
-
-                    if admin_choice == 1:
-                        denominations = get_money()
-                        if validate_denominations(denominations, available_denominations):
-                            print("Amount Updated")
-                            available_denominations = update_money(
-                                available_denominations, denominations)
-                        else:
-                            clear_screen()
-                            print("Reached maximum threshold")
-                        print(
-                            "Available Balance : {}/-".format(find_balance(available_denominations)))
-
-                    if admin_choice == 2:
+                if admin_choice == 1:
+                    denominations = get_money()
+                    if validate_denominations(denominations, available_denominations):
+                        print("Amount Updated")
+                        available_denominations = update_money(
+                            available_denominations, denominations)
+                    else:
                         clear_screen()
-                        print(
-                            "Available Balance : {}/-".format(find_balance(available_denominations)))
+                        print("Reached maximum threshold")
+                    print(
+                        "Available Balance : {}/-".format(find_balance(available_denominations)))
 
-                    if admin_choice == 3:
-                        clear_screen()
-                        break
+                if admin_choice == 2:
+                    clear_screen()
+                    print(
+                        "Available Balance : {}/-".format(find_balance(available_denominations)))
 
-            else:
-                # clear_screen()
-                print("Invalid adminname or password")
+                if admin_choice == 3:
+                    clear_screen()
+                    break
 
-        if user_choice == 2:
-            name, password = get_names()
-            if (authenticate_user(stored_user_data, name, password)):
-                clear_screen()
-                print("Welcome user {}!".format(name))
-                while True:
-                    choice = int(input(
-                        "1. Add Money\n2. Check Balance\n3. Update Pin\n4. Transfer money\n5. Withdraw money\n6. Exit\n"))
+        else:
+            # clear_screen()
+            print("Invalid adminname or password")
 
-                    if choice == 1:
-                        denominations = get_money()
-                        clear_screen()
-                        print(
-                            "Previous Balance : {}/-".format(available_balances[name]))
-                        available_balances[name] = available_balances[name] + \
-                            return_bal(denominations)
-                        print(
-                            "Amount to be Added : {}/-".format(return_bal(denominations)))
-                        print(
-                            "Your current balance is : {}/-".format(available_balances[name]))
+    if user_choice == 2:
+        name, password = get_names()
+        if (authenticate_user(stored_user_data, name, password)):
+            clear_screen()
+            print("Welcome user {}!".format(name))
+            while True:
+                choice = int(input(
+                    "1. Add Money\n2. Check Balance\n3. Update Pin\n4. Transfer money\n5. Withdraw money\n6. Exit\n"))
 
-                    if choice == 2:
-                        clear_screen()
-                        print(
-                            "Your current balance is : {}/-".format(available_balances[name]))
+                if choice == 1:
+                    denominations = get_money()
+                    clear_screen()
+                    print(
+                        "Previous Balance : {}/-".format(available_balances[name]))
+                    available_balances[name] = available_balances[name] + \
+                        return_bal(denominations)
+                    print(
+                        "Amount to be Added : {}/-".format(return_bal(denominations)))
+                    print(
+                        "Your current balance is : {}/-".format(available_balances[name]))
 
-                    if choice == 3:
-                        clear_screen()
-                        new_pin = int(input("Enter new pin: \n"))
-                        stored_user_data = change_pin(
-                            stored_user_data, name, new_pin)
-                        print("PIN successfully updated")
+                if choice == 2:
+                    clear_screen()
+                    print(
+                        "Your current balance is : {}/-".format(available_balances[name]))
 
-                    if choice == 4:
-                        clear_screen()
-                        transfer_name = input(
-                            "Enter the name of the person you want to transfer : ")
-                        amount = int(input("Enter the amount : "))
-                        if validate_transfer(name, amount, available_balances, max_user_threshold):
-                            if transfer_name in available_balances.keys():
-                                # print(available_balances)
-                                # transfer_funds(name, transfer_name,
-                                #                amount, available_balances)
-                                # print(available_balances)
-                                print("Successfully transfered to {}".format(
-                                    transfer_name))
-                                available_balances = transfer_funds(
-                                    name, transfer_name, amount, available_balances)
-                                print("New Balance : {}".format(
-                                    available_balances[name]))
-                            else:
-                                print("No such name as {}. Make sure that you've spelt it properly".format(
-                                    transfer_name))
+                if choice == 3:
+                    clear_screen()
+                    new_pin = int(input("Enter new pin: \n"))
+                    stored_user_data = change_pin(
+                        stored_user_data, name, new_pin)
+                    print("PIN successfully updated")
 
-                        else:
-                            clear_screen()
-                            print("Insuffient Funds or maximum limit reached")
-                            print("Your Balance : {}\nAmount : {} ".format(
-                                available_balances[name], amount))
-                            print("Total Amount transfered : {}".format(
-                                max_user_threshold[name]))
-
-                    if choice == 5:
-                        clear_screen()
-                        amount = int(
-                            input("Enter the amount you want to withdraw : "))
-                        if available_balances[name] < amount:
-                            print("Insufficient Funds")
-                        else:
-                            available_balances[name] -= amount
+                if choice == 4:
+                    clear_screen()
+                    transfer_name = input(
+                        "Enter the name of the person you want to transfer : ")
+                    amount = int(input("Enter the amount : "))
+                    if validate_transfer(name, amount, available_balances, max_user_threshold):
+                        if transfer_name in available_balances.keys():
+                            # print(available_balances)
+                            # transfer_funds(name, transfer_name,
+                            #                amount, available_balances)
+                            # print(available_balances)
+                            print("Successfully transfered to {}".format(
+                                transfer_name))
+                            available_balances = transfer_funds(
+                                name, transfer_name, amount, available_balances)
                             print("New Balance : {}".format(
                                 available_balances[name]))
+                        else:
+                            print("No such name as {}. Make sure that you've spelt it properly".format(
+                                transfer_name))
 
-                    if choice == 6:
-                        break
+                    else:
+                        clear_screen()
+                        print("Insuffient Funds or maximum limit reached")
+                        print("Your Balance : {}\nAmount : {} ".format(
+                            available_balances[name], amount))
+                        print("Total Amount transfered : {}".format(
+                            max_user_threshold[name]))
 
-            else:
-                print("Invalid username or password")
+                if choice == 5:
+                    clear_screen()
+                    amount = int(
+                        input("Enter the amount you want to withdraw : "))
+                    if available_balances[name] < amount:
+                        print("Insufficient Funds")
+                    else:
+                        available_balances[name] -= amount
+                        print("New Balance : {}".format(
+                            available_balances[name]))
 
+                if choice == 6:
+                    break
 
-if __name__ == '__main__':
-    main()
+        else:
+            print("Invalid username or password")
