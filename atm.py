@@ -11,9 +11,16 @@ def clear_screen():
 def get_names(admin_login=False):
     clear_screen()
     print("Admin Login" if admin_login else "User Login")
-    name = input("Enter your name : ")
-    password = int(input("Enter your password : "))
-    clear_screen()
+    while True:
+        try:
+            name = input("Enter your name : ")
+            password = int(input("Enter your password : "))
+            clear_screen()
+            break
+        except ValueError:
+            clear_screen()
+            print(
+                "Invalid Input\n Name Should be a string and password should be an integer")
     return [name, password]
 
 
@@ -83,7 +90,7 @@ def generate_denominations(amt, denominations=[], vals=[2000, 1000, 500, 200, 10
 
 def validate_transfer(name, amount, balance_database, threshold):
     # return amount > balance_database[name]
-    return True if amount < balance_database[name] and threshold[name]+amount < 100000 else False
+    return True if amount < balance_database[name] and threshold[name]+amount < 200000 else False
 
 
 def transfer_funds(from_name, to_name, amount, balance_database):
@@ -92,20 +99,37 @@ def transfer_funds(from_name, to_name, amount, balance_database):
     return balance_database
 
 
-# Stored Data
+def validate_atm_funds(amount, available_denominations):
+    return amount < find_balance(available_denominations)
 
+
+def get_send_details():
+    while True:
+        try:
+            name = input(
+                "Enter the name of the person you want to transfer : ")
+            amount = int(input("Enter the amount : "))
+            break
+        except ValueError:
+            clear_screen()
+            print("Invalid amount")
+    clear_screen()
+    return [name, amount]
+
+
+# Stored Data
 stored_admin_data = {"Hario": 12345}
 stored_user_data = {"kisna": 12345,
                     "kaggleDhina": 123456, "dhina": 1234567, "har": 321}
-available_denominations = {2000: 10, 1000: 10, 500: 10, 200: 10, 100: 10}
+available_denominations = {2000: 10, 1000: 20, 500: 30, 200: 40, 100: 50}
 available_balances = {"kisna": 25000,
-                      "kaggleDhina": 30200, "dhina": 300400, "har": 10500}
+                      "kaggleDhina": 302000, "dhina": 300400, "har": 105000}
 max_user_threshold = {"kisna": 0, "kaggleDhina": 0, "dhina": 0, "har": 0}
 
 # Driver Code
 
+clear_screen()
 while True:
-    clear_screen()
     print("ATM Application")
     user_choice = int(input("1. Admin Login\n2. User Login\n3. Exit\n"))
     if user_choice == 3:
@@ -182,37 +206,47 @@ while True:
 
                 if choice == 4:
                     clear_screen()
-                    transfer_name = input(
-                        "Enter the name of the person you want to transfer : ")
-                    amount = int(input("Enter the amount : "))
-                    if validate_transfer(name, amount, available_balances, max_user_threshold):
-                        if transfer_name in available_balances.keys():
-                            # print(available_balances)
-                            # transfer_funds(name, transfer_name,
-                            #                amount, available_balances)
-                            # print(available_balances)
-                            print("Successfully transfered to {}".format(
-                                transfer_name))
-                            available_balances = transfer_funds(
-                                name, transfer_name, amount, available_balances)
-                            print("New Balance : {}".format(
-                                available_balances[name]))
-                        else:
-                            print("No such name as {}. Make sure that you've spelt it properly".format(
-                                transfer_name))
-
-                    else:
+                    transfer_name, amount = get_send_details()
+                    if not validate_atm_funds(amount, available_denominations):
                         clear_screen()
-                        print("Insuffient Funds or maximum limit reached")
-                        print("Your Balance : {}\nAmount : {} ".format(
-                            available_balances[name], amount))
-                        print("Total Amount transfered : {}".format(
-                            max_user_threshold[name]))
+                        print(
+                            "Insufficient funds in atm. Sorry for the inconvenience")
+                    else:
+                        if validate_transfer(name, amount, available_balances, max_user_threshold):
+                            if transfer_name in available_balances.keys():
+                                print("Successfully transfered to {}".format(
+                                    transfer_name))
+                                available_balances = transfer_funds(
+                                    name, transfer_name, amount, available_balances)
+                                print("New Balance : {}".format(
+                                    available_balances[name]))
+                            else:
+                                print("No such name as {}. Make sure that you've spelt it properly".format(
+                                    transfer_name))
+
+                        else:
+                            clear_screen()
+                            print("Insuffient Funds or maximum limit reached")
+                            print("Your Balance : {}\nAmount : {} ".format(
+                                available_balances[name], amount))
+                            print("Total Amount transfered : {}".format(
+                                max_user_threshold[name]))
 
                 if choice == 5:
                     clear_screen()
-                    amount = int(
-                        input("Enter the amount you want to withdraw : "))
+                    while True:
+                        try:
+                            amount = int(
+                                input("Enter the amount you want to withdraw : "))
+                            break
+                        except:
+                            clear_screen()
+                            print("Invalid amount")
+                    if not validate_atm_funds(amount, available_denominations):
+                        clear_screen()
+                        print(
+                            "Insufficient funds in atm. Sorry for the inconvenience")
+                        continue
                     if available_balances[name] < amount:
                         print("Insufficient Funds")
                     else:
@@ -221,7 +255,9 @@ while True:
                             available_balances[name]))
 
                 if choice == 6:
+                    clear_screen()
                     break
 
         else:
+            clear_screen()
             print("Invalid username or password")
