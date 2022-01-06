@@ -55,7 +55,7 @@ def return_bal(amt, bal=0, vals=[2000, 1000, 500, 200, 100]):
 
 
 def validate_denominations(denominations, available_denominations):
-    max_threshold = {2000: 50, 1000: 50, 500: 50, 200: 50, 100: 50}
+    max_threshold = {2000: 500, 1000: 500, 500: 500, 200: 500, 100: 500}
     for index, (val) in enumerate(max_threshold):
         if denominations[index] + available_denominations[val] > max_threshold[val]:
             return False
