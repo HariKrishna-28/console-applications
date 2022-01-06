@@ -131,7 +131,10 @@ max_user_threshold = {"kisna": 0, "kaggleDhina": 0, "dhina": 0, "har": 0}
 clear_screen()
 while True:
     print("ATM Application")
-    user_choice = int(input("1. Admin Login\n2. User Login\n3. Exit\n"))
+    try:
+        user_choice = int(input("1. Admin Login\n2. User Login\n3. Exit\n"))
+    except ValueError:
+        continue
     if user_choice == 3:
         clear_screen()
         exit()
@@ -177,8 +180,14 @@ while True:
             clear_screen()
             print("Welcome user {}!".format(name))
             while True:
-                choice = int(input(
-                    "1. Add Money\n2. Check Balance\n3. Update Pin\n4. Transfer money\n5. Withdraw money\n6. Exit\n"))
+                while True:
+                    try:
+                        choice = int(input(
+                            "1. Add Money\n2. Check Balance\n3. Update Pin\n4. Transfer money\n5. Withdraw money\n6. Exit\n"))
+                        break
+                    except ValueError:
+                        clear_screen()
+                        print("Invalid Entry")
 
                 if choice == 1:
                     denominations = get_money()
@@ -242,13 +251,14 @@ while True:
                         except:
                             clear_screen()
                             print("Invalid amount")
+                    if available_balances[name] < amount:
+                        clear_screen()
+                        print("Insufficient Funds")
+                        continue
                     if not validate_atm_funds(amount, available_denominations):
                         clear_screen()
                         print(
                             "Insufficient funds in atm. Sorry for the inconvenience")
-                        continue
-                    if available_balances[name] < amount:
-                        print("Insufficient Funds")
                     else:
                         available_balances[name] -= amount
                         print("New Balance : {}".format(
@@ -257,6 +267,9 @@ while True:
                 if choice == 6:
                     clear_screen()
                     break
+
+                else:
+                    clear_screen()
 
         else:
             clear_screen()
