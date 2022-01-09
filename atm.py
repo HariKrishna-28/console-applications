@@ -1,3 +1,9 @@
+# Console application that has the basic functionalities of an automated teller machine.
+# All the datas like user/admin credentials, account balances, withdrawal limit are static
+# and set to default once the application stops.
+# Head to line 126 for data and 134 for the driver code
+
+
 import os
 
 
