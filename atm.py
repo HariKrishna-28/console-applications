@@ -152,6 +152,7 @@ while True:
                 if admin_choice == 1:
                     denominations = get_money()
                     if validate_denominations(denominations, available_denominations):
+                        clear_screen()
                         print("Amount Updated")
                         available_denominations = update_money(
                             available_denominations, denominations)
@@ -208,7 +209,14 @@ while True:
 
                 if choice == 3:
                     clear_screen()
-                    new_pin = int(input("Enter new pin: \n"))
+                    while True:
+                        try:
+                            new_pin = int(input("Enter new pin: \n"))
+                            break
+                        except ValueError:
+                            clear_screen()
+                            print("Invalid pin")
+
                     stored_user_data = change_pin(
                         stored_user_data, name, new_pin)
                     print("PIN successfully updated")
@@ -223,8 +231,8 @@ while True:
                     else:
                         if validate_transfer(name, amount, available_balances, max_user_threshold):
                             if transfer_name in available_balances.keys():
-                                print("Successfully transfered to {}".format(
-                                    transfer_name))
+                                print("Successfully transfered {}/- to {}".format(
+                                    amount, transfer_name))
                                 available_balances = transfer_funds(
                                     name, transfer_name, amount, available_balances)
                                 print("New Balance : {}".format(
@@ -260,16 +268,19 @@ while True:
                         print(
                             "Insufficient funds in atm. Sorry for the inconvenience")
                     else:
+                        clear_screen()
                         available_balances[name] -= amount
-                        print("New Balance : {}".format(
+                        print("Amount Withdrawn : {}/-".format(amount))
+                        print("New Balance : {}/-".format(
                             available_balances[name]))
 
                 if choice == 6:
                     clear_screen()
                     break
 
-                else:
+                if choice > 6:
                     clear_screen()
+                    print("Invalid Choice")
 
         else:
             clear_screen()
