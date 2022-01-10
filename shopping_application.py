@@ -3,6 +3,7 @@
 # to default once the application has stopped runninng.
 
 import os
+from random import randint
 
 
 def clear_screen():
@@ -68,21 +69,27 @@ def remove_merchants(database, new_database={}):
     return new_database
 
 
-def print_products(products, seller=""):
+def print_products(products, seller="", name=""):
     print("{:<4} {:<18} {:<18} {:<10} {:<10}".format(
-        "SNo", "Name", "Seller", "Quantity", "Price"))
+        "Id", "Name", "Seller", "Quantity", "Price"))
     for index, (keys, values) in enumerate(products.items()):
-        if not seller:
+        if not seller and not name:
             print("{:<4} {:<18} {:<18} {:<10} {:<10}".format(
                 index+1, keys, values[-1], values[0], values[1]))
+
         else:
-            if seller.lower() == values[-1].lower():
-                print("{:<4} {:<18} {:<18} {:<10} {:<10}".format(
-                    index+1, keys, values[-1], values[0], values[1]))
+            if seller:
+                if seller.lower() == values[-1].lower():
+                    print("{:<4} {:<18} {:<18} {:<10} {:<10}".format(
+                        index+1, keys, values[-1], values[0], values[1]))
+            if name:
+                if name.lower() == keys.lower():
+                    print("{:<4} {:<18} {:<18} {:<10} {:<10}".format(
+                        index+1, keys, values[-1], values[0], values[1]))
 
 
 def print_merchants(merchants):
-    print("{:<4} {:<18} ".format("SNo", "Name"))
+    print("{:<4} {:<18} ".format("Id", "Name"))
     for index, (keys) in enumerate(merchants.keys()):
         print("{:<4} {:<18} ".format(index, keys))
 
@@ -119,17 +126,45 @@ def restock_shelf(db, p_name, quantity):
     return db
 
 
-# Data
+def update_items(db, p_name, product, quantity):
+    if p_name in db:
+        db[p_name].append([product, quantity])
+    else:
+        db[name] = [[product, quantity]]
+    return db
+
+
+def show_items(db, name):
+    if name not in db:
+        clear_screen()
+        print("Empty")
+    else:
+        clear_screen()
+        print("{:<4} {:<18} {:<25}".format(
+            "SNo", "Name", "Quantity"))
+        for keys, items in db.items():
+            for i in items:
+                if keys.lower() == name.lower():
+                    print("{:<4} {:<18} {:<25}".format(
+                        items.index(i)+1, i[0], i[-1]))
+
+    # Data
 admin_credentials = {"Hario": 12345}
 merchant_credentials = {"hariMerchant": 54321,
                         "merchantHari": 1221, "merch": 1111}
-user_credentials = {"Har": 123, "krishna": 321}
+user_credentials = {"Har": 123, "krishna": 321, "kowsik": 1212, "dina": 1232}
 # productName = [quantity, price, seller]
-products = {"Washing Machine": [500, 5000, "hariMerchant"],
-            "Fridge": [300, 35000, "merchantHari"], "Phone": [1000, 7000, "merch"], }
+products = {"Washing machine": [500, 5000, "hariMerchant"],
+            "Fridge": [300, 35000, "merchantHari"], "Phone": [1000, 7000, "merch"],
+            "Washing Machine": [50, 7000, "merchantHari"]}
 merchant_approval_queue = {"MerchA": 1000, "MerchB": 9999}
 product_approval_queue = {"Speaker": [
     8000, 350, "merch"], "Computer": [123, 10000, "hariMerchant"]}
+# userName = [name of the product, quantity]
+cart = {"Har": [["Fridge", 2]], "dina": [
+    ["Phone", 1]], "kowsik": [["Washing Machine", 1]]}
+
+shopping_history = {"kowsik": [["Washing Machine", 2]]}
 
 
 # driver code
@@ -337,3 +372,154 @@ while True:
             if merchant_choice == 4:
                 clear_screen()
                 break
+
+    if choice == 3:
+        clear_screen()
+        while True:
+            while True:
+                try:
+                    print("User Login")
+                    user_choice = int(input("1. Login\n2. Signup\n3. Exit\n"))
+                    if user_choice > 3:
+                        clear_screen()
+                        print("Invalid Choice")
+                    else:
+                        break
+                except ValueError:
+                    clear_screen()
+                    print("Invalid Entry")
+
+            if user_choice == 2:
+                name, password = get_names(type="New User")
+                if name not in user_credentials:
+                    user_credentials[name] = password
+                    clear_screen()
+                    print("Added your credentials. Login to continue")
+                    continue
+                else:
+                    clear_screen()
+                    print("User already exists. Try a different user name")
+
+            if user_choice == 3:
+                clear_screen()
+                break
+
+            if user_choice == 1:
+                name, password = get_names(type="User")
+                if authenticate_user(name, password, user_credentials):
+                    clear_screen()
+                    while True:
+                        print("Welcome user {}". format(name.capitalize()))
+                        while True:
+                            try:
+                                verified_user_choice = int(
+                                    input("1. Available Products\n2. View Cart\n3. History\n4. Exit\n"))
+                                if verified_user_choice > 4:
+                                    clear_screen()
+                                    print("Invalid Choice")
+                                else:
+                                    break
+                            except ValueError:
+                                clear_screen()
+                                print("Invalid Entry")
+
+                        if verified_user_choice == 4:
+                            clear_screen()
+                            break
+
+                        if verified_user_choice == 1:
+                            clear_screen()
+                            print_products(products)
+                            while True:
+                                while True:
+                                    try:
+                                        product_choice = input(
+                                            "Wnat would you like to buy : ")
+                                        product_quantity = int(
+                                            input("Enter quantity : "))
+                                        break
+
+                                    except ValueError:
+                                        clear_screen()
+                                        print("Invalid Entry")
+
+                                if product_choice.lower().capitalize() in products:
+                                    while True:
+                                        try:
+                                            buyer_choice = int(
+                                                input("1. Buy Now\n2. Add to Cart\n3. Exit\n"))
+                                            if buyer_choice > 3:
+                                                clear_screen()
+                                                print("Invalid Entry")
+                                            else:
+                                                break
+                                        except ValueError:
+                                            clear_screen()
+                                            print("Invalid Entry")
+                                    if buyer_choice == 1:
+                                        clear_screen()
+                                        print("Available Offers")
+                                        print_products(
+                                            products, name=product_choice)
+                                        seller_name = input(
+                                            "Choose a seller : ")
+                                        clear_screen()
+                                        try:
+                                            val = products[product_choice.lower(
+                                            ).capitalize()]
+                                            val[0] -= product_quantity
+                                            shopping_history = update_items(
+                                                cart, name, product_choice, product_quantity)
+                                            address = input(
+                                                "Enter your address : ")
+                                            print("{} will be delivered to {} in {} business days". format(
+                                                product_choice, address, randint(1, 8)))
+                                            break
+                                        except KeyError:
+                                            clear_screen()
+                                            print("Seller not available")
+
+                                    if buyer_choice == 2:
+                                        cart = update_items(
+                                            cart, name, product_choice, product_quantity)
+                                        clear_screen()
+                                        print("Added {} to your cart. Your cart now has {} items".format(
+                                            product_choice, len(cart[name])))
+                                        break
+
+                                else:
+                                    clear_screen()
+                                    print("No Products Found")
+
+                        if verified_user_choice == 2:
+                            show_items(cart, name)
+                            # clear_screen()
+                            # if name not in cart:
+                            #     print("Your cart is empty")
+                            # else:
+                            #     clear_screen()
+                            #     print("{:<4} {:<18} {:<4}".format(
+                            #         "SNo", "Name", "Quantity"))
+                            #     for keys, items in cart.items():
+                            #         for i in items:
+                            #             print("{:<4} {:<18} {:<4}".format(
+                            #                 items.index(i)+1, i[0], i[-1]))
+                            continue
+
+                        if verified_user_choice == 3:
+                            show_items(shopping_history, name)
+                            # clear_screen()
+                            # if name not in shopping_history:
+                            #     print("Your shopping_history is empty")
+                            # else:
+                            #     clear_screen()
+                            #     print("{:<4} {:<18} {:<4}".format(
+                            #         "SNo", "Name", "Quantity"))
+                            #     for keys, items in shopping_history.items():
+                            #         for i in items:
+                            #             print("{:<4} {:<18} {:<4}".format(
+                            #                 items.index(i)+1, i[0], i[-1]))
+                            continue
+
+                else:
+                    print("Invalid name")
