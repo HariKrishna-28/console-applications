@@ -68,12 +68,17 @@ def remove_merchants(database, new_database={}):
     return new_database
 
 
-def print_products(products):
-    print("{:<4} {:<18} {:<10} {:<10}".format(
-        "SNo", "Name", "Quantity", "Price"))
+def print_products(products, seller=""):
+    print("{:<4} {:<18} {:<18} {:<10} {:<10}".format(
+        "SNo", "Name", "Seller", "Quantity", "Price"))
     for index, (keys, values) in enumerate(products.items()):
-        print("{:<4} {:<18} {:<10} {:<10}".format(
-            index+1, keys, values[0], values[-1]))
+        if not seller:
+            print("{:<4} {:<18} {:<18} {:<10} {:<10}".format(
+                index+1, keys, values[-1], values[0], values[1]))
+        else:
+            if seller.lower() == values[-1].lower():
+                print("{:<4} {:<18} {:<18} {:<10} {:<10}".format(
+                    index+1, keys, values[-1], values[0], values[1]))
 
 
 def print_merchants(merchants):
@@ -86,16 +91,45 @@ def check_data(name, database):
     return name in database
 
 
+def receive_products(new_product=False):
+    while True:
+        try:
+            name = input("Enter the name of the product : ")
+            quantity = int(input("Enter the quantity : "))
+            if not new_product:
+                return [name, quantity]
+            else:
+                price = int(input("Enter the price : "))
+                return[name, quantity, price]
+        except ValueError:
+            clear_screen()
+            print("Invalid Entry")
+
+
+def validate_product_entry(db, product, user_name):
+    for key, vals in db.items():
+        if key.lower() == product.lower() and vals[-1].lower() == user_name.lower():
+            return True
+    return False
+
+
+def restock_shelf(db, p_name, quantity):
+    old_quantity = db[p_name]
+    old_quantity[0] += quantity
+    return db
+
+
 # Data
 admin_credentials = {"Hario": 12345}
 merchant_credentials = {"hariMerchant": 54321,
                         "merchantHari": 1221, "merch": 1111}
 user_credentials = {"Har": 123, "krishna": 321}
-# productName = [quantity, price]
-products = {"Washing Machine": [500, 5000],
-            "Fridge": [300, 35000], "Phone": [1000, 7000], }
+# productName = [quantity, price, seller]
+products = {"Washing Machine": [500, 5000, "hariMerchant"],
+            "Fridge": [300, 35000, "merchantHari"], "Phone": [1000, 7000, "merch"], }
 merchant_approval_queue = {"MerchA": 1000, "MerchB": 9999}
-product_approval_queue = {"Speaker": [8000, 350], "Computer": [123, 10000]}
+product_approval_queue = {"Speaker": [
+    8000, 350, "merch"], "Computer": [123, 10000, "hariMerchant"]}
 
 
 # driver code
@@ -225,6 +259,66 @@ while True:
                         print("Theres already a merchant named {}. Try a different name".format(
                             name))
 
+            if merchant_choice == 2:
+                clear_screen()
+                name, password = get_names(type="merchant")
+
+                if authenticate_user(name, password, merchant_credentials):
+                    clear_screen()
+                    while True:
+                        while True:
+                            try:
+                                print("Welcome merchant {}!".format(
+                                    name.capitalize()))
+                                verified_merchant_choice = int(input(
+                                    "1. Restock Products\n2. View Products\n3. Request for a new product\n4. Exit \n"))
+                                if (merchant_choice > 4):
+                                    clear_screen()
+                                    print("Enter a valid option")
+                                else:
+                                    break
+                            except ValueError:
+                                clear_screen()
+                                print("Invalid Entry")
+
+                        if verified_merchant_choice == 1:
+                            product_name, quantity = receive_products()
+                            if validate_product_entry(products, product_name, name):
+                                products = restock_shelf(
+                                    products, product_name, quantity)
+                                clear_screen()
+                                print("Updated the quantity of the products")
+                                print("New Quantity : {} units".format(
+                                    products[product_name][0]))
+                            else:
+                                clear_screen()
+                                print("You dont own that product!")
+
+                        if verified_merchant_choice == 2:
+                            clear_screen()
+                            print_products(products, seller=name)
+
+                        if verified_merchant_choice == 3:
+                            new_product_name, quantity, price = receive_products(
+                                new_product=True)
+                            if validate_product_entry(products, new_product_name, name):
+                                clear_screen()
+                                print(
+                                    "Product already existes. Restock them instead of adding a new one")
+                            else:
+                                product_approval_queue[new_product_name] = [
+                                    quantity, price, name]
+                                clear_screen()
+                                print("Waiting for approval")
+
+                        if verified_merchant_choice == 4:
+                            clear_screen()
+                            break
+
+                else:
+                    clear_screen()
+                    print("Invalid username or password")
+
             if merchant_choice == 3:
                 clear_screen()
                 name, password = get_names(type="merchant approval")
@@ -243,28 +337,3 @@ while True:
             if merchant_choice == 4:
                 clear_screen()
                 break
-
-            if merchant_choice == 2:
-                clear_screen()
-                name, password = get_names(type="merchant")
-
-                if authenticate_user(name, password, merchant_credentials):
-                    while True:
-                        while True:
-                            try:
-                                clear_screen()
-                                print("Welcome merchant {}!".format(
-                                    name.capitalize()))
-                                merchant_choice = int(input(
-                                    "1. Restock Products\n2. View Products\n3. Request for a new product\n4. Exit \n"))
-                                if (merchant_choice > 4):
-                                    clear_screen()
-                                    print("Enter a valid option")
-                                else:
-                                    break
-                            except ValueError:
-                                clear_screen()
-                                print("Invalid Entry")
-                else:
-                    clear_screen()
-                    print("Invalid username or password")
