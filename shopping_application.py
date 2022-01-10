@@ -13,7 +13,6 @@ def clear_screen():
 
 
 def get_names(type):
-    clear_screen()
     print("{} Login".format(type.capitalize()))
     while True:
         name = input("Enter your name : ")
@@ -54,13 +53,37 @@ def approve_data(database, merchant_database, type, new_database={}, updated_dat
     return updated_database, merchant_database | new_database
 
 
+def remove_merchants(database, new_database={}):
+    for keys, items in database.items():
+        while True:
+            choice = input(
+                "Do you want to remove {} as an authorised merchant (Y/N) : ".format(keys.capitalize()))
+            if choice.lower() not in ["y", "n"]:
+                clear_screen()
+                print("Invalid input")
+            else:
+                if choice.lower() == "n":
+                    new_database[keys] = items
+                break
+    return new_database
+
+
 def print_products(products):
-    clear_screen()
     print("{:<4} {:<18} {:<10} {:<10}".format(
         "SNo", "Name", "Quantity", "Price"))
     for index, (keys, values) in enumerate(products.items()):
         print("{:<4} {:<18} {:<10} {:<10}".format(
             index+1, keys, values[0], values[-1]))
+
+
+def print_merchants(merchants):
+    print("{:<4} {:<18} ".format("SNo", "Name"))
+    for index, (keys) in enumerate(merchants.keys()):
+        print("{:<4} {:<18} ".format(index, keys))
+
+
+def check_data(name, database):
+    return name in database
 
 
 # Data
@@ -71,7 +94,7 @@ user_credentials = {"Har": 123, "krishna": 321}
 # productName = [quantity, price]
 products = {"Washing Machine": [500, 5000],
             "Fridge": [300, 35000], "Phone": [1000, 7000], }
-merchant_approval_queue = {"Merchant1": 1000, "Merchant2": 9999}
+merchant_approval_queue = {"MerchA": 1000, "MerchB": 9999}
 product_approval_queue = {"Speaker": [8000, 350], "Computer": [123, 10000]}
 
 
@@ -95,27 +118,25 @@ while True:
             print("Invalid Entry")
 
     if choice == 1:
-        clear_screen()
         name, password = get_names(type="admin")
         if authenticate_user(name, password, admin_credentials):
             clear_screen()
-            print("Welcome Admin {}".format(name.capitalize()))
             while True:
                 while True:
                     try:
+                        # clear_screen()
+                        print("Welcome Admin {}".format(name.capitalize()))
                         admin_choice = int(input(
-                            "1. Approve New Merchants\n2. View Products\n3. Approve Product\n4. Exit \n"))
-                        if (admin_choice > 5):
+                            "1. Approve New Merchants\n2. View Products\n3. Remove Existing Merchants\n4. Approve Product\n5. Available Merchants\n6. Available Products\n7. Exit \n"))
+                        if (admin_choice > 7):
                             clear_screen()
                             print("Enter a valid option")
                         else:
+                            clear_screen()
                             break
                     except ValueError:
                         clear_screen()
                         print("Invalid Entry")
-
-                if admin_choice == 4:
-                    break
 
                 if admin_choice == 1:
                     if not merchant_approval_queue:
@@ -132,7 +153,7 @@ while True:
                 if admin_choice == 2:
                     print_products(products)
 
-                if admin_choice == 3:
+                if admin_choice == 4:
                     if not product_approval_queue:
                         clear_screen()
                         print("Empty queue")
@@ -142,5 +163,108 @@ while True:
                         product_approval_queue, products, type="product")
                     print("Added {} new products".format(
                         len(products)-previous_count))
+
+                if admin_choice == 3:
+                    clear_screen()
+                    previous_count = len(merchant_credentials)
+                    merchant_credentials = remove_merchants(
+                        merchant_credentials)
+                    print("Removed {} merchants".format(
+                        previous_count-len(merchant_credentials)))
+
+                if admin_choice == 5:
+                    clear_screen()
+                    print("\nAvailable merchants:")
+                    print_merchants(merchant_credentials)
+                    print("\nWaiting for approval")
+                    print_merchants(merchant_approval_queue)
+
+                if admin_choice == 6:
+                    clear_screen()
+                    print("\nAvailable Products")
+                    print_products(products)
+                    print("\nWaiting Products")
+                    print_products(product_approval_queue)
+
+                if admin_choice == 7:
+                    break
+
         else:
+            clear_screen()
             print("Invalid Username or Password")
+
+    if choice == 2:
+        clear_screen()
+        while True:
+            while True:
+                try:
+                    # clear_screen()
+                    print("Merchant Portal")
+                    merchant_choice = int(input(
+                        "1. Become a Merchant\n2. Merchant Login\n3. Check Approval Status\n4. Exit \n"))
+                    if (merchant_choice > 4):
+                        clear_screen()
+                        print("Enter a valid option")
+                    else:
+                        break
+                except ValueError:
+                    clear_screen()
+                    print("Invalid Entry")
+
+            if merchant_choice == 1:
+                while True:
+                    # clear_screen()
+                    name, password = get_names(type="new merchant")
+                    if name not in merchant_approval_queue and name not in merchant_credentials:
+                        merchant_approval_queue[name] = password
+                        clear_screen()
+                        print("Your request is waiting for approval")
+                        break
+                    else:
+                        clear_screen()
+                        print("Theres already a merchant named {}. Try a different name".format(
+                            name))
+
+            if merchant_choice == 3:
+                clear_screen()
+                name, password = get_names(type="merchant approval")
+                if name in merchant_approval_queue:
+                    clear_screen()
+                    print(
+                        "Your profile is waiting for approval by the admin. Please login and check later")
+                if name in merchant_credentials:
+                    clear_screen()
+                    print("Merchant request approved")
+                if name not in merchant_approval_queue and name not in merchant_credentials:
+                    clear_screen()
+                    print(
+                        "Were sorry to tell you that your approval has been rejected.")
+
+            if merchant_choice == 4:
+                clear_screen()
+                break
+
+            if merchant_choice == 2:
+                clear_screen()
+                name, password = get_names(type="merchant")
+
+                if authenticate_user(name, password, merchant_credentials):
+                    while True:
+                        while True:
+                            try:
+                                clear_screen()
+                                print("Welcome merchant {}!".format(
+                                    name.capitalize()))
+                                merchant_choice = int(input(
+                                    "1. Restock Products\n2. View Products\n3. Request for a new product\n4. Exit \n"))
+                                if (merchant_choice > 4):
+                                    clear_screen()
+                                    print("Enter a valid option")
+                                else:
+                                    break
+                            except ValueError:
+                                clear_screen()
+                                print("Invalid Entry")
+                else:
+                    clear_screen()
+                    print("Invalid username or password")
