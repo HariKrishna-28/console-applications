@@ -1,6 +1,7 @@
 # Console shopping application that has functionalities similar to amazon
 # All the user/admin credentials and available datas are static and resets
 # to default once the application has stopped runninng.
+# Head to line 153 for data and 172 for the driver code
 
 import os
 from random import randint
@@ -339,7 +340,7 @@ while True:
                             if validate_product_entry(products, new_product_name, name):
                                 clear_screen()
                                 print(
-                                    "Product already existes. Restock them instead of adding a new one")
+                                    "Product already exists. Restock them instead of adding a new one")
                             else:
                                 product_approval_queue[new_product_name] = [
                                     quantity, price, name]
