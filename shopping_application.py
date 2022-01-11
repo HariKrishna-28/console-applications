@@ -467,14 +467,19 @@ while True:
                                         try:
                                             val = products[product_choice.lower(
                                             ).capitalize()]
-                                            val[0] -= product_quantity
-                                            shopping_history = update_items(
-                                                cart, name, product_choice, product_quantity)
-                                            address = input(
-                                                "Enter your address : ")
-                                            print("{} will be delivered to {} in {} business days". format(
-                                                product_choice, address, randint(1, 8)))
-                                            break
+                                            if val[0] < product_quantity:
+                                                clear_screen()
+                                                print(
+                                                    "Out of stock. Try a different buyer")
+                                            else:
+                                                val[0] -= product_quantity
+                                                shopping_history = update_items(
+                                                    cart, name, product_choice, product_quantity)
+                                                address = input(
+                                                    "Enter your address : ")
+                                                print("{} will be delivered to {} in {} business days". format(
+                                                    product_choice, address, randint(1, 8)))
+                                                break
                                         except KeyError:
                                             clear_screen()
                                             print("Seller not available")
@@ -493,32 +498,10 @@ while True:
 
                         if verified_user_choice == 2:
                             show_items(cart, name)
-                            # clear_screen()
-                            # if name not in cart:
-                            #     print("Your cart is empty")
-                            # else:
-                            #     clear_screen()
-                            #     print("{:<4} {:<18} {:<4}".format(
-                            #         "SNo", "Name", "Quantity"))
-                            #     for keys, items in cart.items():
-                            #         for i in items:
-                            #             print("{:<4} {:<18} {:<4}".format(
-                            #                 items.index(i)+1, i[0], i[-1]))
                             continue
 
                         if verified_user_choice == 3:
                             show_items(shopping_history, name)
-                            # clear_screen()
-                            # if name not in shopping_history:
-                            #     print("Your shopping_history is empty")
-                            # else:
-                            #     clear_screen()
-                            #     print("{:<4} {:<18} {:<4}".format(
-                            #         "SNo", "Name", "Quantity"))
-                            #     for keys, items in shopping_history.items():
-                            #         for i in items:
-                            #             print("{:<4} {:<18} {:<4}".format(
-                            #                 items.index(i)+1, i[0], i[-1]))
                             continue
 
                 else:
