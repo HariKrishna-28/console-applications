@@ -432,17 +432,17 @@ public class railwayReservation {
                                         if (trainData.containsKey(trainName)) {
                                             if (passengerCount < returnStats(availableSeats.get(trainName))) {
                                                 clearScreen();
-                                                System.out.println(availableSeats.get(trainName));
+                                                // System.out.println(availableSeats.get(trainName));
                                                 HashMap<List<Integer>, List<Boolean>> updatedData = modifyData(
                                                         availableSeats.get(trainName), passengerCount);
-                                                System.out.println(updatedData);
+                                                // System.out.println(updatedData);
                                                 for (Map.Entry<List<Integer>, List<Boolean>> entry : updatedData
                                                         .entrySet()) {
                                                     // availableSeats.get(trainName) = entry.getValue();
 
                                                     availableSeats.replace(trainName, entry.getValue());
                                                     // clearScreen();
-                                                    System.out.println(availableSeats.get(trainName));
+                                                    // System.out.println(availableSeats.get(trainName));
 
                                                     System.out.printf("Ticket details\nSeat No : ");
                                                     for (int i : entry.getKey()) {
