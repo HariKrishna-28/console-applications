@@ -407,15 +407,6 @@ public class railwayReservation {
                                     printRoutes(trainData);
                                 }
 
-                                // if (verifiedUserChoice == 1) {
-                                // while (true) {
-                                // clearScreen();
-                                // List<String> travelDetails = getTravelDetails();
-                                // System.out.println(travelDetails);
-                                // break;
-                                // }
-                                // }
-
                                 if (verifiedUserChoice == 2) {
                                     clearScreen();
                                     String name, trainName, count;
@@ -441,27 +432,23 @@ public class railwayReservation {
                                         if (trainData.containsKey(trainName)) {
                                             if (passengerCount < returnStats(availableSeats.get(trainName))) {
                                                 clearScreen();
-                                                // System.out.println("Before");
-                                                // System.out.println(availableSeats.get(trainName));
+                                                System.out.println(availableSeats.get(trainName));
                                                 HashMap<List<Integer>, List<Boolean>> updatedData = modifyData(
                                                         availableSeats.get(trainName), passengerCount);
-                                                // System.out.printf("\n");
-                                                // System.out.println("after");
-                                                // System.out.println(updatedData);
-                                                // List<Boolean> updatedSeatingData = new ArrayList<>();
+                                                System.out.println(updatedData);
                                                 for (Map.Entry<List<Integer>, List<Boolean>> entry : updatedData
                                                         .entrySet()) {
-                                                    // System.out.println(returnStats(availableSeats.get(trainName)));
-                                                    availableSeats.replace(trainName, availableSeats.get(trainName));
-                                                    // availableSeats.put(trainName, entry.getValue());
-                                                    clearScreen();
+                                                    // availableSeats.get(trainName) = entry.getValue();
+
+                                                    availableSeats.replace(trainName, entry.getValue());
+                                                    // clearScreen();
+                                                    System.out.println(availableSeats.get(trainName));
+
                                                     System.out.printf("Ticket details\nSeat No : ");
                                                     for (int i : entry.getKey()) {
                                                         System.out.printf("%d ", i);
                                                     }
                                                     System.out.println("Have a safe journey");
-                                                    // System.out.println(returnStats(availableSeats.get(trainName)));
-
                                                 }
                                                 break;
 
@@ -477,52 +464,7 @@ public class railwayReservation {
                                             continue;
                                         }
                                     }
-                                    // while (true) {
-                                    // while (true) {
-                                    // try {
-                                    // // System.out.println(trainData);
-                                    // System.out.println("Enter the name of the train : ");
-                                    // name = sc.nextLine();
-                                    // System.out.println("Enter the number of passengers : ");
-                                    // passengerCount = sc.nextInt();
-                                    // // passengerCount = 10;
-                                    // trainName = name + " " + "express";
-                                    // // trainName = "wakanda" + " " + "express";
-                                    // break;
-                                    // } catch (Exception e) {
-                                    // // clearScreen();
-                                    // System.err.println(e);
-                                    // System.out.println("Invalid entry");
-                                    // continue;
-                                    // }
-                                    // }
-                                    // if (trainData.containsKey(trainName)) {
-                                    // if (passengerCount < returnStats(availableSeats.get(trainName))) {
-                                    // clearScreen();
-                                    // HashMap<List<Integer>, List<Boolean>> updatedData = modifyData(
-                                    // availableSeats.get(trainName), passengerCount);
-                                    // // List<Boolean> updatedSeatingData = new ArrayList<>();
-                                    // for (Map.Entry<List<Integer>, List<Boolean>> entry : updatedData
-                                    // .entrySet()) {
-                                    // availableSeats.replace(trainName, availableSeats.get(trainName),
-                                    // entry.getValue());
-                                    // System.out.println("Ticket Details");
-                                    // for (int i : entry.getKey()) {
-                                    // System.out.printf("%d ", i);
-                                    // }
-                                    // }
-                                    // } else {
-                                    // clearScreen();
-                                    // System.out.printf("Only {} seats available",
-                                    // returnStats(availableSeats.get(trainName)));
-                                    // break;
-                                    // }
-                                    // } else {
-                                    // clearScreen();
-                                    // System.out.println("No such train available");
-                                    // continue;
-                                    // }
-                                    // }
+
                                 }
                                 if (verifiedUserChoice == 3) {
                                     clearScreen();
