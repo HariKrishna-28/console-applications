@@ -97,6 +97,59 @@ public class railwayReservation {
         }
     }
 
+    static List<String> getRouteDetails() {
+        Scanner sc = new Scanner(System.in);
+        List<String> details = new ArrayList<>();
+        while (true) {
+            try {
+                System.out.println("Enter name of the express : ");
+                String name = sc.nextLine();
+                details.add(name + " " + "express");
+                System.out.println("Enter the start and stop destination(Separate using spaces) : ");
+                String dest = sc.nextLine();
+                String[] split = dest.split(" ");
+                if (split[0].equals(split[1])) {
+                    clearScreen();
+                    System.out.println("Source and destination can't be same");
+                    continue;
+                } else {
+                    try {
+                        details.add(split[0]);
+                        details.add(split[1]);
+                    } catch (Exception e) {
+                        clearScreen();
+                        System.out.println("Please match the requested format");
+                        continue;
+                    }
+                }
+                System.out.println("Enter station name");
+                String trainName = sc.nextLine();
+                details.add(trainName + " " + "central");
+                return details;
+            } catch (Exception e) {
+                clearScreen();
+                System.err.println(e);
+            }
+        }
+    }
+
+    static HashMap<String, List<String>> deleteData(HashMap<String, List<String>> data) {
+        Scanner sc = new Scanner(System.in);
+        // while (true){
+        clearScreen();
+        System.out.println("Enter the name of the train you want to delete : ");
+        String name = sc.nextLine() + " " + "express";
+        try {
+            data.remove(name);
+            System.out.printf("Removed train %s\n", name);
+        } catch (Exception e) {
+            clearScreen();
+            System.out.println("No such name");
+        }
+        return data;
+        // }
+    }
+
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         clearScreen();
@@ -122,7 +175,7 @@ public class railwayReservation {
                     }
                 } catch (Exception e) {
                     clearScreen();
-                    System.err.println(e);
+                    System.err.println("Invalid entry");
                 }
             }
 
@@ -149,7 +202,8 @@ public class railwayReservation {
                                 }
                             } catch (Exception e) {
                                 clearScreen();
-                                System.err.println(e);
+                                System.err.println("Inalid input");
+                                continue;
                             }
                         }
                         if (adminChoice == 4) {
@@ -157,10 +211,26 @@ public class railwayReservation {
                             break;
                         }
 
+                        if (adminChoice == 1) {
+                            clearScreen();
+                            List<String> routeDetails = getRouteDetails();
+                            System.out.println(routeDetails);
+                            List<String> keyData = new ArrayList<>(
+                                    Arrays.asList(routeDetails.get(1), routeDetails.get(2), routeDetails.get(3)));
+                            printRoutes(trainData);
+                            trainData.put(routeDetails.get(0), keyData);
+                            printRoutes(trainData);
+                        }
+
                         if (adminChoice == 2) {
                             clearScreen();
                             printRoutes(trainData);
 
+                        }
+
+                        if (adminChoice == 3) {
+                            clearScreen();
+                            trainData = deleteData(trainData);
                         }
                     }
                 } else {
