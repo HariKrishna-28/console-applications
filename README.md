@@ -1,8 +1,8 @@
 # console-applications
 
 > ### _Simple console applications built using java and python._
->
-> <br>
+
+ <br>
 
 ## Contents
 
