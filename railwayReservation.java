@@ -3,7 +3,6 @@
 // to default once the application has stopped runninng.
 
 import java.util.*;
-// import java.lang.*;
 
 public class railwayReservation {
 
@@ -439,11 +438,9 @@ public class railwayReservation {
                                                 for (Map.Entry<List<Integer>, List<Boolean>> entry : updatedData
                                                         .entrySet()) {
                                                     // availableSeats.get(trainName) = entry.getValue();
-
                                                     availableSeats.replace(trainName, entry.getValue());
                                                     // clearScreen();
                                                     // System.out.println(availableSeats.get(trainName));
-
                                                     System.out.printf("Ticket details\nSeat No : ");
                                                     for (int i : entry.getKey()) {
                                                         System.out.printf("%d ", i);
