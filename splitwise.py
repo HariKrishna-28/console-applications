@@ -1,10 +1,5 @@
-
-from ast import Try
-import enum
-import math
 import os
-from random import choice
-from ssl import enum_certificates
+import math
 
 
 def clear_screen():
