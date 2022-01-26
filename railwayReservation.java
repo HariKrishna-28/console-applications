@@ -6,6 +6,8 @@ import java.util.*;
 
 public class railwayReservation {
 
+    private static Scanner sc = new Scanner(System.in);
+
     public static void clearScreen() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
@@ -53,20 +55,18 @@ public class railwayReservation {
     }
 
     static List<String> getNames(String parameters) {
-        Scanner sc = new Scanner(System.in);
         List<String> data = new ArrayList<>();
         clearScreen();
         while (true) {
             try {
                 System.out.printf("%s LOGIN\n", parameters.toUpperCase());
                 System.out.println("Enter your name : ");
-                String name = sc.nextLine();
+                String name = sc.next();
                 System.out.println("Enter your password : ");
-                String pass = sc.nextLine();
+                String pass = sc.next();
                 if (checkInteger(pass) && checkString(name)) {
                     data.add(name);
                     data.add(pass);
-                    // System.out.println(data);
                     return data;
                 } else {
                     clearScreen();
@@ -99,7 +99,6 @@ public class railwayReservation {
     }
 
     static List<String> getRouteDetails() {
-        Scanner sc = new Scanner(System.in);
         List<String> details = new ArrayList<>();
         while (true) {
             try {
@@ -135,8 +134,6 @@ public class railwayReservation {
     }
 
     static HashMap<String, List<String>> deleteData(HashMap<String, List<String>> data) {
-        Scanner sc = new Scanner(System.in);
-        // while (true){
         clearScreen();
         System.out.println("Enter the name of the train you want to delete : ");
         String name = sc.nextLine() + " " + "express";
@@ -148,7 +145,6 @@ public class railwayReservation {
             System.out.println("No such name");
         }
         return data;
-        // }
     }
 
     static boolean validateNewUser(HashMap<String, Integer> data, String name) {
@@ -156,8 +152,6 @@ public class railwayReservation {
     }
 
     static List<String> getTravelDetails() {
-        // clearScreen();
-        Scanner sc = new Scanner(System.in);
         List<String> data = new ArrayList<>();
         String destinations;
         while (true) {
@@ -180,8 +174,6 @@ public class railwayReservation {
                 continue;
             }
         }
-
-        // return data;
     }
 
     static List<Boolean> generateArrangements(int range) {
@@ -226,7 +218,6 @@ public class railwayReservation {
                 if (range == len) {
                     break;
                 }
-                // System.out.print(data.get(i));
                 len++;
                 i++;
                 ticketDetails.add(i + 1);
@@ -237,7 +228,6 @@ public class railwayReservation {
     }
 
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
         HashMap<String, Integer> userCredentials = generateCredentials(true);
         HashMap<String, Integer> adminCredentials = generateCredentials(false);
         HashMap<String, List<String>> trainData = generateTrainData();
@@ -431,16 +421,11 @@ public class railwayReservation {
                                         if (trainData.containsKey(trainName)) {
                                             if (passengerCount < returnStats(availableSeats.get(trainName))) {
                                                 clearScreen();
-                                                // System.out.println(availableSeats.get(trainName));
                                                 HashMap<List<Integer>, List<Boolean>> updatedData = modifyData(
                                                         availableSeats.get(trainName), passengerCount);
-                                                // System.out.println(updatedData);
                                                 for (Map.Entry<List<Integer>, List<Boolean>> entry : updatedData
                                                         .entrySet()) {
-                                                    // availableSeats.get(trainName) = entry.getValue();
                                                     availableSeats.replace(trainName, entry.getValue());
-                                                    // clearScreen();
-                                                    // System.out.println(availableSeats.get(trainName));
                                                     System.out.printf("Ticket details\nSeat No : ");
                                                     for (int i : entry.getKey()) {
                                                         System.out.printf("%d ", i);

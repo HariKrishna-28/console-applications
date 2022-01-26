@@ -89,6 +89,8 @@ wallet_amount = {"hari@gmail.com": 35000, "krishna@gmail.com": 20000,
 contact_groups = {
     "hk@gmail.com": ["hk@gmail.com", "hari@gmail.com", "kowsik@gmail.com"], }
 
+# due_amounts = {}
+
 # Driver code
 clear_screen()
 while True:
@@ -133,8 +135,8 @@ while True:
                 while True:
                     try:
                         user_choice = int(input(
-                            "1. Add Expense\n2. Update Wallet\n3. Create Contact Group\n4. Add Contacts\n5. Remove Friends\n6. View Dues\n7. View Transaction History\n8. Logout\n"))
-                        if user_choice > 8:
+                            "1. Add Expense\n2. Update Wallet\n3. Add Contacts\n4. Remove Friends\n5. View Dues\n6. View Transaction History\n7. Logout\n"))
+                        if user_choice > 7:
                             clear_screen()
                             print("invalid choice")
                         else:
@@ -151,37 +153,20 @@ while True:
                     wallet_amount[name] = wallet_amount[name]+price
                     print(wallet_amount)
 
-                if user_choice == 8:
+                if user_choice == 7:
                     clear_screen()
                     break
 
-                # if user_choice == 3:
-                #     clear_screen()
-                #     if name not in contact_groups:
-                #         contact_groups = create_contact_group(
-                #             name, contact_groups)
-                #         print("Successfully created a contact group")
-                #     else:
-                #         clear_screen()
-                #         print("Contact group already exists. Try adding contacts")
-                #     continue
-
-                if user_choice == 4:
+                if user_choice == 3:
                     clear_screen()
-                    # if name not in contact_groups:
-                    #     contact_groups = create_contact_group(
-                    #         name, contact_groups)
                     prev_length = len(contact_groups[name])
                     contact_groups = modify_contacts(
                         name, contact_groups, user_credentials, add=True)
                     print("Added {} contacts".format(
                         prev_length-len(contact_groups[name])))
 
-                if user_choice == 5:
+                if user_choice == 4:
                     clear_screen()
-                    # if name not in contact_groups:
-                    #     contact_groups = create_contact_group(
-                    #         name, contact_groups)
                     print(contact_groups[name])
                     if len(contact_groups[name]) == 1:
                         clear_screen()
