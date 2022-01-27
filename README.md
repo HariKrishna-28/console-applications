@@ -1,4 +1,5 @@
 # console-applications
+
  <br>
 
 > ### _Simple console applications built using java and python._
@@ -16,6 +17,7 @@
 | **[Automated Teller Machine](https://github.com/HariKrishna-28/console-applications/blob/main/automated_teller_machine.py)**    | ATM application built using python          |
 | **[Shopping application](https://github.com/HariKrishna-28/console-applications/blob/main/shopping_application.py)**            | Shopping application built using python     |
 | **[Railway Reservation application](https://github.com/HariKrishna-28/console-applications/blob/main/railwayReservation.java)** | Ticket booking application built using java |
+| **[Splitwise application](https://github.com/HariKrishna-28/console-applications/blob/main/splitwise.py)**                      | Splitwise application built using python    |
 
 </div>
 <br>
