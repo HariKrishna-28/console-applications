@@ -134,6 +134,17 @@ def validate_shares(expense_details, payment_due, sum=0):
     return sum > payment_due
 
 
+# def update_transactions(expense_details, transaction_history, expense_name):
+#     for name, amount in expense_details.items():
+#         print(amount)
+#         transaction_data = transaction_history[name]
+#         if transaction_history[name]:
+#             transaction_data[expense_name] += amount
+#         else:
+#             transaction_data[expense_name] = amount
+#     return transaction_history
+
+
 user_credentials = {"hari@gmail.com": "123",
                     "krishna@gmail.com": "321", "kowsik@gmail.com": "1212", "dina@gmail.com": "1232", "hk@gmail.com": "123"}
 
