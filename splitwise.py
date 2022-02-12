@@ -1,3 +1,5 @@
+# Splitwise application. Head to line 150 for static data and 167 for the driver code
+
 import os
 import math
 
