@@ -83,7 +83,7 @@ public class LibraryManagement {
         // CREATING ADMIN CREDENTIALS
         Admin.adminDetails.add(new Admin("Admin", "123"));
         ArrayList<Integer> temp = new ArrayList<>();
-        Borrower.borrowerDetails.add(new Borrower("user@gmail.com", "123", "Dhaurn", 0, 1500, "1000", temp));
+        Borrower.borrowerDetails.add(new Borrower("user@gmail.com", "123", "hari", 0, 1500, "1000", temp));
         Admin.bookDetails.add(new Book("LifeOfPie", 3, 1, 10, 0));
         Admin.bookDetails.add(new Book("TempleOfSong", 3, 2, 20, 0));
         setCurrentDate();
